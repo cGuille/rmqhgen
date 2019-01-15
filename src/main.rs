@@ -1,9 +1,11 @@
 extern crate base64;
 extern crate clap;
 extern crate crypto_hash;
+extern crate rand;
 
 use clap::{App, AppSettings, Arg, SubCommand};
 use crypto_hash::{digest, Algorithm};
+use rand::{thread_rng, Rng};
 
 fn main() {
     let app_matches = App::new("RabbitMQ password hash generator")
@@ -65,11 +67,9 @@ fn main() {
     }
 
     if let Some(generate_matches) = app_matches.subcommand_matches("generate") {
-        // TODO
-        println!(
-            "PASSWORD: {}",
-            generate_matches.value_of("password").unwrap()
-        );
+        let password = generate_matches.value_of("password").unwrap();
+
+        println!("{}", generate(password));
     }
 }
 
@@ -95,4 +95,11 @@ fn generate_with_salt(salt: &[u8], password: &str) -> String {
     salted_hash.append(&mut hash);
 
     base64::encode(&salted_hash)
+}
+
+fn generate(password: &str) -> String {
+    let mut salt = [0u8; 4];
+    thread_rng().fill(&mut salt[..]);
+
+    generate_with_salt(&salt, password)
 }
