@@ -6,4 +6,6 @@ authors = ["Guillaume Charmetant <cguille.dev@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+base64 = "*"
 clap = "*"
+crypto-hash = "*"
