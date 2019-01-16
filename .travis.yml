@@ -1,2 +1,71 @@
+# Based on the "trust" template v0.1.2
+# https://github.com/japaric/trust/tree/v0.1.2
+
+dist: trusty
 language: rust
+services: docker
+sudo: required
+
+env:
+  global:
+    - CRATE_NAME=rmqhgen
+
+matrix:
+  # TODO These are all the build jobs. Adjust as necessary. Comment out what you
+  # don't need
+  include:
+    - env: TARGET=x86_64-unknown-linux-gnu
+    - env: TARGET=i686-apple-darwin
+      os: osx
+    - env: TARGET=x86_64-apple-darwin
+      os: osx
+    - env: TARGET=x86_64-pc-windows-gnu
+
+    # Testing other channels
+    - env: TARGET=x86_64-unknown-linux-gnu
+      rust: nightly
+    - env: TARGET=x86_64-apple-darwin
+      os: osx
+      rust: nightly
+
+before_install:
+  - set -e
+  - rustup self update
+
+install:
+  - sh ci/install.sh
+  - source ~/.cargo/env || true
+
+script:
+  - bash ci/script.sh
+
+after_script: set +e
+
+before_deploy:
+  - sh ci/before_deploy.sh
+
+deploy:
+  api_key:
+    secure: "aruzphrTScrW0CwpQ6yYCp+2oGIDzkSGEqsmluju0kUY547YHOzOclRLbqfmzJXlyxNELOl9cbcI7vMLSxatW6FZS20mhyaQoWF3MTjlRxcS5T9q6oFIEpvHpx5Qi95iFCgZMjfTXVtBOYAN7DRjZjbWIBdCjhAVQE6o5NF20mW7J0rhmNpRVep1aJ758gtLVxLYjTsCntPbEtdeSWuWfrxbQhEtpHfDoSZBSJVEA843rl+pUq+0TF+vIwdk/ikyry9reYVNgZEfKrizmqc1ILwr4s5td9MDQjS/xtt3svOsywtabo5+qFFSc6HLrZwUzjesC/a080Gk8dF6OplK4JkY0faVo6tJNzS8DkGsHo5b97L3R36TSIyj4V9fIFkKQ3CRlW3y3ZOAL9qQsZI+y41oiHIOLmThIt+iSOYYeLFtUK2b0SJtrXeV9zhv06/8tftB1UUo9yzC3s2ATxirlkDqs97W7nSMo8SI6zzQlvCMDYmQzTBUHswapT6dlvhRwnYtQiCg9jI/7fYW99zUtZew8rfnV6SBAx4mM/O2uYva+NdXQsffzVEvCQ3ZfbBAE3cIXJgeYu466jPjeZlfo6Hko27LXqNs4QgN1RytqYHHjtvquQfHxaHmzTSnCiiPx3rbIcIU13ZssOldkAQMbogrKu/RfufSPNIcD4o2aOg="
+  file_glob: true
+  file: $CRATE_NAME-$TRAVIS_TAG-$TARGET.*
+  on:
+    condition: $TRAVIS_RUST_VERSION = stable
+    tags: true
+  provider: releases
+  skip_cleanup: true
+
 cache: cargo
+before_cache:
+  # Travis can't cache files that are not readable by "others"
+  - chmod -R a+r $HOME/.cargo
+
+branches:
+  only:
+    # release tags
+    - /^v\d+\.\d+\.\d+.*$/
+    - master
+
+notifications:
+  email:
+    on_success: never
