@@ -11,13 +11,13 @@ fn main() {
     let app_matches = App::new("RabbitMQ password hash generator")
         .setting(AppSettings::ArgRequiredElseHelp)
         .version("0.1.0")
-        .about("Generate and validate RabbitMQ compliant password hashes")
+        .about("Generates and validates RabbitMQ compliant password hashes")
         .subcommand(
             SubCommand::with_name("validate")
-                .about("Validate a given password against a known hash")
+                .about("Validates a given password against a known hash")
                 .arg(
                     Arg::with_name("quiet")
-                        .help("Do not print anything; only the exit code will tell whether the validation passed or not")
+                        .help("Does not print anything; only the exit code will tell whether the validation passed or not")
                         .short("q")
                         .long("quiet")
                 )
@@ -36,7 +36,7 @@ fn main() {
         )
         .subcommand(
             SubCommand::with_name("generate")
-                .about("Generate a RabbitMQ compliant hash for the given password")
+                .about("Generates a RabbitMQ compliant hash for the given password")
                 .arg(
                     Arg::with_name("password")
                         .help("The clear password to generate a hash for")
