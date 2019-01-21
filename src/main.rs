@@ -10,7 +10,7 @@ use rand::{thread_rng, Rng};
 fn main() {
     let app_matches = App::new("RabbitMQ password hash generator")
         .setting(AppSettings::ArgRequiredElseHelp)
-        .version("0.1.0")
+        .version("0.2.0")
         .about("Generates and validates RabbitMQ compliant password hashes")
         .subcommand(
             SubCommand::with_name("validate")

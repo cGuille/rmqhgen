@@ -1,7 +1,7 @@
 [package]
 name = "rmqhgen"
 description = "Generate and validate RabbitMQ password hashes"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Guillaume Charmetant <cguille.dev@gmail.com>"]
 edition = "2018"
 
