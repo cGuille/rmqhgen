@@ -16,6 +16,16 @@ fn main() {
             SubCommand::with_name("validate")
                 .about("Validates a given password against a known hash")
                 .arg(
+                    Arg::with_name("algorithm")
+                        .short("a")
+                        .long("algorithm")
+                        .help("The algorithm used to validate the given hash")
+                        .takes_value(true)
+                        .default_value("sha256")
+                        .possible_values(&["sha256"])
+                        .required(true)
+                )
+                .arg(
                     Arg::with_name("quiet")
                         .help("Does not print anything; only the exit code will tell whether the validation passed or not")
                         .short("q")
@@ -38,6 +48,16 @@ fn main() {
             SubCommand::with_name("generate")
                 .about("Generates a RabbitMQ compliant hash for the given password")
                 .arg(
+                    Arg::with_name("algorithm")
+                        .short("a")
+                        .long("algorithm")
+                        .help("The algorithm used to generate the hash")
+                        .takes_value(true)
+                        .default_value("sha256")
+                        .possible_values(&["sha256"])
+                        .required(true)
+                )
+                .arg(
                     Arg::with_name("password")
                         .help("The clear password to generate a hash for")
                         .required(true)
@@ -47,7 +67,7 @@ fn main() {
         .get_matches();
 
     if let Some(validate_matches) = app_matches.subcommand_matches("validate") {
-        let algorithm = Algorithm::SHA256;
+        let algorithm = parse_algo(validate_matches.value_of("algorithm").unwrap());
         let quiet = validate_matches.is_present("quiet");
         let hash = validate_matches.value_of("hash").unwrap();
         let password = validate_matches.value_of("password").unwrap();
@@ -68,7 +88,7 @@ fn main() {
     }
 
     if let Some(generate_matches) = app_matches.subcommand_matches("generate") {
-        let algorithm = Algorithm::SHA256;
+        let algorithm = parse_algo(generate_matches.value_of("algorithm").unwrap());
         let password = generate_matches.value_of("password").unwrap();
 
         println!("{}", generate(algorithm, password));
@@ -104,4 +124,11 @@ fn generate(algorithm: Algorithm, password: &str) -> String {
     thread_rng().fill(&mut salt[..]);
 
     generate_with_salt(algorithm, &salt, password)
+}
+
+fn parse_algo(algo_name: &str) -> Algorithm {
+    match algo_name {
+        "sha256" => Algorithm::SHA256,
+        _ => panic!("Unexpected algorithm {}", algo_name),
+    }
 }
