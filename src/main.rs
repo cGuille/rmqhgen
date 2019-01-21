@@ -22,7 +22,7 @@ fn main() {
                         .help("The algorithm used to validate the given hash")
                         .takes_value(true)
                         .default_value("sha256")
-                        .possible_values(&["sha256", "sha512"])
+                        .possible_values(&["sha256", "sha512", "md5"])
                         .required(true)
                 )
                 .arg(
@@ -130,6 +130,7 @@ fn parse_algo(algo_name: &str) -> Algorithm {
     match algo_name {
         "sha256" => Algorithm::SHA256,
         "sha512" => Algorithm::SHA512,
+        "md5" => Algorithm::MD5,
         _ => panic!("Unexpected algorithm {}", algo_name),
     }
 }
