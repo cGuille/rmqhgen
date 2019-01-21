@@ -47,11 +47,12 @@ fn main() {
         .get_matches();
 
     if let Some(validate_matches) = app_matches.subcommand_matches("validate") {
+        let algorithm = Algorithm::SHA256;
         let quiet = validate_matches.is_present("quiet");
         let hash = validate_matches.value_of("hash").unwrap();
         let password = validate_matches.value_of("password").unwrap();
 
-        if validate(hash, password) {
+        if validate(algorithm, hash, password) {
             if !quiet {
                 println!("OK");
             }
@@ -67,29 +68,30 @@ fn main() {
     }
 
     if let Some(generate_matches) = app_matches.subcommand_matches("generate") {
+        let algorithm = Algorithm::SHA256;
         let password = generate_matches.value_of("password").unwrap();
 
-        println!("{}", generate(password));
+        println!("{}", generate(algorithm, password));
     }
 }
 
-fn validate(hash: &str, password: &str) -> bool {
+fn validate(algorithm: Algorithm, hash: &str, password: &str) -> bool {
     let decoded_hash =
         base64::decode(hash.as_bytes()).expect("Invalid hash: could not decode base64");
     let salt = decoded_hash
         .get(0..4)
         .expect("Invalid hash: could not extract salt");
 
-    let expected_hash = generate_with_salt(salt, password);
+    let expected_hash = generate_with_salt(algorithm, salt, password);
 
     hash == &expected_hash
 }
 
-fn generate_with_salt(salt: &[u8], password: &str) -> String {
+fn generate_with_salt(algorithm: Algorithm, salt: &[u8], password: &str) -> String {
     let mut salted_pass = salt.to_vec();
     salted_pass.append(&mut password.as_bytes().to_vec());
 
-    let mut hash = digest(Algorithm::SHA256, &salted_pass);
+    let mut hash = digest(algorithm, &salted_pass);
 
     let mut salted_hash = salt.to_vec();
     salted_hash.append(&mut hash);
@@ -97,9 +99,9 @@ fn generate_with_salt(salt: &[u8], password: &str) -> String {
     base64::encode(&salted_hash)
 }
 
-fn generate(password: &str) -> String {
+fn generate(algorithm: Algorithm, password: &str) -> String {
     let mut salt = [0u8; 4];
     thread_rng().fill(&mut salt[..]);
 
-    generate_with_salt(&salt, password)
+    generate_with_salt(algorithm, &salt, password)
 }
