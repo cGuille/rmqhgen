@@ -21,7 +21,7 @@ main() {
     cross rustc --bin rmqhgen --target $TARGET --release -- -C lto
 
     # TODO Update this to package the right artifacts
-    cp target/$TARGET/release/rmqhgen $stage/
+    cp target/$TARGET/release/rmqhgen{,.exe} $stage/
 
     cd $stage
     tar czf $src/$CRATE_NAME-$TRAVIS_TAG-$TARGET.tar.gz *
