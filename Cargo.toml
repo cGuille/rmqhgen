@@ -8,6 +8,5 @@ edition = "2018"
 [dependencies]
 base64 = "*"
 clap = "*"
-crypto-hash = "*"
 rand = "*"
 rust-crypto = "*"

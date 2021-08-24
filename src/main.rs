@@ -1,12 +1,10 @@
-extern crate base64;
-extern crate clap;
-extern crate crypto_hash;
-extern crate rand;
-
 use clap::{App, AppSettings, Arg, SubCommand};
+use crypto::digest::Digest;
+use crypto::md5::Md5;
+use crypto::sha2::{Sha256, Sha512};
 use crypto::util::fixed_time_eq;
-use crypto_hash::{digest, Algorithm};
 use rand::{thread_rng, Rng};
+use std::iter::repeat;
 
 fn main() {
     let app_matches = App::new("RabbitMQ password hash generator")
@@ -68,12 +66,12 @@ fn main() {
         .get_matches();
 
     if let Some(validate_matches) = app_matches.subcommand_matches("validate") {
-        let algorithm = parse_algo(validate_matches.value_of("algorithm").unwrap());
+        let digest = algo_to_digest(validate_matches.value_of("algorithm").unwrap());
         let quiet = validate_matches.is_present("quiet");
         let hash = validate_matches.value_of("hash").unwrap();
         let password = validate_matches.value_of("password").unwrap();
 
-        if validate(algorithm, hash, password) {
+        if validate(digest, hash, password) {
             if !quiet {
                 println!("OK");
             }
@@ -89,30 +87,32 @@ fn main() {
     }
 
     if let Some(generate_matches) = app_matches.subcommand_matches("generate") {
-        let algorithm = parse_algo(generate_matches.value_of("algorithm").unwrap());
+        let digest = algo_to_digest(generate_matches.value_of("algorithm").unwrap());
         let password = generate_matches.value_of("password").unwrap();
 
-        println!("{}", generate(algorithm, password));
+        println!("{}", generate(digest, password));
     }
 }
 
-fn validate(algorithm: Algorithm, hash: &str, password: &str) -> bool {
+fn validate(digest: Box<dyn Digest>, hash: &str, password: &str) -> bool {
     let decoded_hash =
         base64::decode(hash.as_bytes()).expect("Invalid hash: could not decode base64");
     let salt = decoded_hash
         .get(0..4)
         .expect("Invalid hash: could not extract salt");
 
-    let expected_hash = generate_with_salt(algorithm, salt, password);
+    let expected_hash = generate_with_salt(digest, salt, password);
 
     fixed_time_eq(hash.as_bytes(), expected_hash.as_bytes())
 }
 
-fn generate_with_salt(algorithm: Algorithm, salt: &[u8], password: &str) -> String {
+fn generate_with_salt(mut digest: Box<dyn Digest>, salt: &[u8], password: &str) -> String {
     let mut salted_pass = salt.to_vec();
     salted_pass.append(&mut password.as_bytes().to_vec());
 
-    let mut hash = digest(algorithm, &salted_pass);
+    digest.input(&salted_pass);
+    let mut hash: Vec<u8> = repeat(0).take((digest.output_bits()+7)/8).collect();
+    digest.result(&mut hash);
 
     let mut salted_hash = salt.to_vec();
     salted_hash.append(&mut hash);
@@ -120,18 +120,18 @@ fn generate_with_salt(algorithm: Algorithm, salt: &[u8], password: &str) -> Stri
     base64::encode(&salted_hash)
 }
 
-fn generate(algorithm: Algorithm, password: &str) -> String {
+fn generate(algorithm: Box<dyn Digest>, password: &str) -> String {
     let mut salt = [0u8; 4];
     thread_rng().fill(&mut salt[..]);
 
     generate_with_salt(algorithm, &salt, password)
 }
 
-fn parse_algo(algo_name: &str) -> Algorithm {
+fn algo_to_digest(algo_name: &str) -> Box<dyn Digest> {
     match algo_name {
-        "sha256" => Algorithm::SHA256,
-        "sha512" => Algorithm::SHA512,
-        "md5" => Algorithm::MD5,
+        "sha256" => Box::new(Sha256::new()),
+        "sha512" => Box::new(Sha512::new()),
+        "md5" => Box::new(Md5::new()),
         _ => panic!("Unexpected algorithm {}", algo_name),
     }
 }
