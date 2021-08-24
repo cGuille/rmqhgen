@@ -4,6 +4,7 @@ extern crate crypto_hash;
 extern crate rand;
 
 use clap::{App, AppSettings, Arg, SubCommand};
+use crypto::util::fixed_time_eq;
 use crypto_hash::{digest, Algorithm};
 use rand::{thread_rng, Rng};
 
@@ -104,7 +105,7 @@ fn validate(algorithm: Algorithm, hash: &str, password: &str) -> bool {
 
     let expected_hash = generate_with_salt(algorithm, salt, password);
 
-    hash == &expected_hash
+    fixed_time_eq(hash.as_bytes(), expected_hash.as_bytes())
 }
 
 fn generate_with_salt(algorithm: Algorithm, salt: &[u8], password: &str) -> String {
