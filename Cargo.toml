@@ -10,3 +10,7 @@ base64 = "0.13.0"
 clap = "2.33.3"
 rand = "0.8.4"
 rust-crypto = "0.2.36"
+
+[dev-dependencies]
+assert_cmd = "2.0.0"
+predicates = "2.0.0"
