@@ -43,3 +43,18 @@ fn test_help_generate() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
+
+#[test]
+fn test_help_validate() -> Result<(), Box<dyn std::error::Error>> {
+    let mut command = Command::cargo_bin("rmqhgen").unwrap();
+
+    let assert = command.arg("help").arg("validate").assert();
+
+    assert
+        .success()
+        .stdout(predicate::str::contains("USAGE:\n    rmqhgen validate"))
+        .stderr(predicate::str::is_empty());
+
+    Ok(())
+}
