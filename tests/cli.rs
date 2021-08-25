@@ -29,3 +29,17 @@ fn test_help() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
+#[test]
+fn test_help_generate() -> Result<(), Box<dyn std::error::Error>> {
+    let mut command = Command::cargo_bin("rmqhgen").unwrap();
+
+    let assert = command.arg("help").arg("generate").assert();
+
+    assert
+        .success()
+        .stdout(predicate::str::contains("USAGE:\n    rmqhgen generate"))
+        .stderr(predicate::str::is_empty());
+
+    Ok(())
+}
