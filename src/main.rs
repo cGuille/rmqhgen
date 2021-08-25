@@ -111,7 +111,7 @@ fn generate_with_salt(mut digest: Box<dyn Digest>, salt: &[u8], password: &str) 
     salted_pass.append(&mut password.as_bytes().to_vec());
 
     digest.input(&salted_pass);
-    let mut hash: Vec<u8> = repeat(0).take((digest.output_bits()+7)/8).collect();
+    let mut hash: Vec<u8> = repeat(0).take((digest.output_bits() + 7) / 8).collect();
     digest.result(&mut hash);
 
     let mut salted_hash = salt.to_vec();
