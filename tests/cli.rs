@@ -24,7 +24,7 @@ fn test_help() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .success()
-        .stdout(predicate::str::contains("USAGE:\n    rmqhgen [SUBCOMMAND]"))
+        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? \\[SUBCOMMAND\\]").unwrap())
         .stderr(predicate::str::is_empty());
 
     Ok(())
@@ -38,7 +38,7 @@ fn test_help_generate() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .success()
-        .stdout(predicate::str::contains("USAGE:\n    rmqhgen generate"))
+        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? generate").unwrap())
         .stderr(predicate::str::is_empty());
 
     Ok(())
@@ -52,7 +52,7 @@ fn test_help_validate() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .success()
-        .stdout(predicate::str::contains("USAGE:\n    rmqhgen validate"))
+        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? validate").unwrap())
         .stderr(predicate::str::is_empty());
 
     Ok(())
