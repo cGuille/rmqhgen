@@ -1,0 +1,44 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        include:
+          - os: ubuntu-latest
+            executable_path: target/release/rmqhgen
+            release_path: target/release/rmqhgen-linux
+          - os: macos-latest
+            executable_path: target/release/rmqhgen
+            release_path: target/release/rmqhgen-macos
+          - os: windows-latest
+            executable_path: target/release/rmqhgen.exe
+            release_path: target/release/rmqhgen-windows.exe
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cargo tests
+        run: cargo test --verbose
+      - name: Cargo build release
+        run: cargo build --release
+      - name: Rename build file
+        run: mv "${{ matrix.executable_path }}" "${{ matrix.release_path }}"
+      - name: Push to release
+        uses: johnwbyrd/update-release@v1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: "${{ matrix.release_path }}"
+          prerelease: false
+          draft: false
