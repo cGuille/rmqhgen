@@ -41,6 +41,7 @@ You can then either directly use the file at `target/release/rmqhgen`, or move i
 - Update the version number in:
   - `Cargo.toml`
   - `src/main.rs`
-- Commit the change.
+- Run the tests (`cargo test`); this will update the version in `Cargo.lock`.
+- Commit the changes.
 - Create a tag for the appropriate version: `git tag 'vX.Y.Z'`.
 - Push the tag: `git push origin 'vX.Y.Z'`
