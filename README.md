@@ -13,9 +13,15 @@ Generate and validate RabbitMQ password hashes, based on [the algorithm describe
 
 Run the command to display usage details. TL;DR:
 
-```
+```bash
 rmqhgen generate <password>
 rmqhgen validate [--quiet] <hash> <password>
+```
+
+## Testing
+
+```bash
+cargo test
 ```
 
 ## Building from sources
