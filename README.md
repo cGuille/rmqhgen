@@ -36,5 +36,5 @@ You can then either directly use the file at `target/release/rmqhgen`, or move i
   - `Cargo.toml`
   - `src/main.rs`
 - Commit the change.
-- Create a tag for the appropriate version: `git tag -a 'vX.Y.Z'`.
+- Create a tag for the appropriate version: `git tag 'vX.Y.Z'`.
 - Push the tag: `git push origin 'vX.Y.Z'`
