@@ -8,7 +8,7 @@ use sha2::Sha512;
 fn main() {
     let app_matches = App::new("RabbitMQ password hash generator")
         .setting(AppSettings::ArgRequiredElseHelp)
-        .version("0.2.4")
+        .version("0.2.5")
         .about("Generates and validates RabbitMQ compliant password hashes")
         .subcommand(
             SubCommand::with_name("validate")
