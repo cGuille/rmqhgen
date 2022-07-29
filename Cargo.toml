@@ -9,8 +9,9 @@ edition = "2018"
 base64 = "0.13.0"
 clap = "2.33.3"
 rand = "0.8.4"
-rust-crypto = "0.2.36"
-
+digest = "0.10.3"
+md-5 = "0.10.1"
+sha2 = "0.10.2"
 [dev-dependencies]
 assert_cmd = "2.0.0"
 predicates = "2.0.0"
