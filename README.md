@@ -38,10 +38,19 @@ You can then either directly use the file at `target/release/rmqhgen`, or move i
 
 ## Create a new release
 
-- Update the version number in:
-  - `Cargo.toml`
-  - `src/main.rs`
-- Run the tests (`cargo test`); this will update the version in `Cargo.lock`.
-- Commit the changes.
-- Create a tag for the appropriate version: `git tag 'vX.Y.Z'`.
-- Push the tag: `git push origin 'vX.Y.Z'`
+### Update the application's version:
+
+1. Update the package version in `Cargo.toml`.
+2. Run the tests (`cargo test`); this will update the version in `Cargo.lock`.
+3. Commit the changes.
+4. Push the commit.
+
+### Create the version's tag
+
+```bash
+git tag "v$(cargo read-manifest | jq --raw-output .version)"
+git push --tags
+```
+
+This will create a release on GitHub, and trigger the release GitHub action which will build the app and upload the
+artifacts to the GitHub release.
