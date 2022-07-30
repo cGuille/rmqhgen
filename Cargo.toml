@@ -6,9 +6,9 @@ authors = ["Guillaume Charmetant <cguille.dev@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-base64 = "0.13.0"
-clap = "2.33.3"
+clap = { version = "3.2.16", features = ["derive"] }
 rand = "0.8.4"
+base64 = "0.13.0"
 digest = "0.10.3"
 md-5 = "0.10.1"
 sha2 = "0.10.2"

@@ -9,7 +9,7 @@ fn test_splash() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .failure()
-        .code(1)
+        .code(2)
         .stdout(predicate::str::is_empty())
         .stderr(predicate::str::contains("USAGE"));
 
