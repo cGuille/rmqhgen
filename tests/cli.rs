@@ -24,7 +24,7 @@ fn test_help() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .success()
-        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? \\[SUBCOMMAND\\]").unwrap())
+        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? <SUBCOMMAND>").unwrap())
         .stderr(predicate::str::is_empty());
 
     Ok(())

@@ -8,10 +8,10 @@ use sha2::Sha256;
 use sha2::Sha512;
 
 #[derive(Parser, Debug)]
-#[clap(version, about, arg_required_else_help = true)]
+#[clap(version, about)]
 struct Cli {
     #[clap(subcommand)]
-    command: Option<Commands>,
+    command: Commands,
 }
 
 #[derive(Subcommand, Debug)]
@@ -82,12 +82,12 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Some(Commands::Validate {
+        Commands::Validate {
             algorithm,
             quiet,
             hash,
             password,
-        }) => {
+        } => {
             if validate(algorithm.into(), &hash, &password) {
                 if !quiet {
                     println!("OK");
@@ -102,13 +102,13 @@ fn main() {
 
             ::std::process::exit(1);
         }
-        Some(Commands::Generate {
+
+        Commands::Generate {
             algorithm,
             password,
-        }) => {
+        } => {
             println!("{}", generate(algorithm.into(), &password));
         }
-        None => panic!("No command given"),
     }
 }
 
