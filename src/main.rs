@@ -8,7 +8,7 @@ use sha2::Sha256;
 use sha2::Sha512;
 
 #[derive(Parser, Debug)]
-#[clap(version, about)]
+#[clap(name = "RabbitMQ password hash generator", version, about)]
 struct Cli {
     #[clap(subcommand)]
     command: Commands,
