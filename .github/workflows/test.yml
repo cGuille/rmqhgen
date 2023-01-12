@@ -22,6 +22,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Rust toolchain versions
+        run: rustc -Vv && cargo -Vv
       - uses: actions/checkout@v3
       - name: Cargo tests
         run: cargo test --verbose
