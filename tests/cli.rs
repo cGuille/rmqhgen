@@ -11,7 +11,7 @@ fn test_splash() -> Result<(), Box<dyn std::error::Error>> {
         .failure()
         .code(2)
         .stdout(predicate::str::is_empty())
-        .stderr(predicate::str::contains("USAGE"));
+        .stderr(predicate::str::contains("Usage:"));
 
     Ok(())
 }
@@ -24,7 +24,7 @@ fn test_help() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .success()
-        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? <SUBCOMMAND>").unwrap())
+        .stdout(predicate::str::is_match("Usage: rmqhgen(\\.exe)? <COMMAND>").unwrap())
         .stderr(predicate::str::is_empty());
 
     Ok(())
@@ -38,7 +38,7 @@ fn test_help_generate() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .success()
-        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? generate").unwrap())
+        .stdout(predicate::str::is_match("Usage: rmqhgen(\\.exe)? generate").unwrap())
         .stderr(predicate::str::is_empty());
 
     Ok(())
@@ -52,7 +52,7 @@ fn test_help_validate() -> Result<(), Box<dyn std::error::Error>> {
 
     assert
         .success()
-        .stdout(predicate::str::is_match("USAGE:\n    rmqhgen(\\.exe)? validate").unwrap())
+        .stdout(predicate::str::is_match("Usage: rmqhgen(\\.exe)? validate").unwrap())
         .stderr(predicate::str::is_empty());
 
     Ok(())

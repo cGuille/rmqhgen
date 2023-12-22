@@ -6,11 +6,11 @@ authors = ["Guillaume Charmetant <cguille.dev@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-clap = { version = "3.2.16", features = ["derive"] }
-rand = "0.8.4"
 base64 = "0.13.0"
+clap = { version = "4.4.11", features = ["derive"] }
 digest = "0.10.3"
 md-5 = "0.10.1"
+rand = "0.8.4"
 sha2 = "0.10.2"
 [dev-dependencies]
 assert_cmd = "2.0.0"

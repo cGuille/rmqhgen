@@ -1,6 +1,6 @@
-use clap::ArgEnum;
 use clap::Parser;
 use clap::Subcommand;
+use clap::ValueEnum;
 use digest::DynDigest;
 use md5::Md5;
 use rand::{thread_rng, Rng};
@@ -18,7 +18,7 @@ struct Cli {
 enum Commands {
     /// Generate a RabbitMQ compliant hash for the given password
     Generate {
-        #[clap(short, long, default_value = "sha256", arg_enum)]
+        #[clap(short, long, default_value = "sha256", value_enum)]
         #[clap(help = "The algorithm used to validate the given hash")]
         algorithm: GenerateAlgo,
 
@@ -28,7 +28,7 @@ enum Commands {
 
     /// Validate a given password against a known hash
     Validate {
-        #[clap(short, long, default_value = "sha256", arg_enum)]
+        #[clap(short, long, default_value = "sha256", value_enum)]
         #[clap(help = "The algorithm used to validate the given hash")]
         algorithm: ValidateAlgo,
 
@@ -46,7 +46,7 @@ enum Commands {
     },
 }
 
-#[derive(Debug, Clone, ArgEnum)]
+#[derive(Debug, Clone, ValueEnum)]
 enum GenerateAlgo {
     Sha512,
     Sha256,
@@ -61,7 +61,7 @@ impl From<GenerateAlgo> for Box<dyn DynDigest> {
     }
 }
 
-#[derive(Debug, Clone, ArgEnum)]
+#[derive(Debug, Clone, ValueEnum)]
 enum ValidateAlgo {
     Sha512,
     Sha256,
